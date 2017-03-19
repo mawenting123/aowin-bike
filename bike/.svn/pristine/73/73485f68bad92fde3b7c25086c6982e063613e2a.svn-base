@@ -1,0 +1,149 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    <title>My JSP 'addCustomer.jsp' starting page</title>
+    <script type="text/javascript" src="tool/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript">
+    $(function(){
+       if(${not empty mess}){
+         alert("${mess}");
+       }
+       
+    })
+    function getCardCode(){
+       if($("#card_type").val()=="市民卡/社保卡"){
+           $("#card_code").val($("#idCard").val());
+       }else{
+           $.ajax({
+             url:"selCardCode.do",
+             success:function(res){
+                $("#card_code").val(res);
+             }
+           })
+       }
+      
+    }
+    
+  	function check(){
+  		if(document.getElementById("identity").value.length ==0 ){
+			document.getElementById("identity1").innerHTML="身份证不能为空！";
+			return false;
+		}else if(document.getElementById("custname").value.length ==0 ){
+			document.getElementById("custname1").innerHTML="姓名不能为空！";
+			return false;
+		}else if(document.getElementById("address").value.length ==0 ){
+			document.getElementById("address1").innerHTML="地址不能为空！";
+			return false;
+		}
+		else{
+			return true;
+		}
+  	
+  	}
+  	function setCardType(){
+  	   var cardType=$("#card_type").val();
+  	   alert(cardType);
+  	   if("A卡"==cardType){
+			$("#card_type").val("1");
+		}else if("D卡"==cardType){
+			$("#card_type").val("2");
+		}else if("市民卡/社保卡"==cardType){
+			$("#card_type").val("3");
+		}else if("员工卡"==cardType){
+			$("#card_type").val("4");
+		}else if("调度卡"==cardType){
+			$("#card_type").val("5");
+		}
+  	}
+  	function checkSub(){
+  	
+  	  setCardType();
+  	  var form=document.getElementById("form");
+  	  form.submit();
+  	}
+  
+  </script>
+  </head>
+  <body >
+  <a href="">查询</a>
+  
+  
+<form name="form" method="post" action="addCard.do"/>
+<TABLE align="center">
+
+<TR>
+    <TD>卡号:</TD>
+	<TD>
+	  <input type="text" id="card_code" name="card_code" readonly/>
+	</TD>
+</TR>
+<TR>
+    <TD>卡类型:</TD>
+	<TD>
+	   <select id="card_type" name="card_type" onchange="getCardCode()">
+	    <option value="1">A卡</option>
+	    <option value="2">D卡</option>
+	    <option value="3">市民卡/社保卡</option>
+	    <option value="4">员工卡</option>
+	    <option value="5">调度卡</option>
+	   </select>
+	</TD>
+</TR>
+<TR>
+    <TD>身份证:</TD>
+	<TD><input name="idCard" id="idCard" onchange="getCardCode()"/><span id="identity1"></span></TD>
+</TR>
+<TR>
+	<TD>姓名:</TD>
+	<TD><input name="name" id="name"/></TD>
+</TR>
+<TR>
+	<TD>性别:</TD>
+	<TD>
+		<SELECT NAME="sex" id="sex">
+			<option value="1">男</option>
+			<option value="0">女</option>
+		</SELECT>
+	</TD>
+</TR>
+
+<TR>
+	<TD>手机:</TD>
+	<TD><input name="telphone"/></TD>
+</TR>
+<TR>
+	<TD>固话:</TD>
+	<TD><input name="mobile"/></TD>
+</TR>
+<TR>
+	<TD>邮箱:</TD>
+	<TD><input name="email"/></TD>
+</TR>
+<TR>
+	<TD>地址:</TD>
+	<TD><input name="address" id="address"/></TD>
+</TR>
+<TR>
+	<TD>工作单位:</TD>
+	<TD><input name="work"/></TD>
+</TR>
+<TR>
+	<TD>月票金额:</TD>
+	<TD><input type="text" name=monthly_money/></TD>
+</TR>
+<TR>
+	<TD></TD>
+	<TD><input type="submit" value="开卡" ></TD>
+</TR>
+</TABLE>
+</form>
+
+  </body>
+</html>

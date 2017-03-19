@@ -1,0 +1,5 @@
+package com.aowin.dao.report;
+
+public interface ICardReportDao {
+
+}

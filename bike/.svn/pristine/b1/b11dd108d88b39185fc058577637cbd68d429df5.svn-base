@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper	namespace="com.aowin.dao.repair.IpileDao">
+	<select id="queryByPile" parameterType="string" resultType="pile">
+		select * from BICYCLE_PILE where STATION_ID =#{station_id}
+	</select>
+</mapper>

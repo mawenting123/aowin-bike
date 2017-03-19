@@ -1,0 +1,115 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE> New Document </TITLE>
+<META NAME="Generator" CONTENT="EditPlus">
+<META NAME="Author" CONTENT="">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+<SCRIPT language=javascript>
+        function selectbox(indexbox)
+        {
+            parent.right.location.href = indexbox;
+        }
+    </SCRIPT>
+    <SCRIPT language=javascript src="js/dtree/dtree.js"></SCRIPT>
+    <script type="text/javascript" src="js/java-like.util.js"></script>
+    <link rel="stylesheet" href="js/dtree/dtree.css" type="text/css">
+</HEAD>
+
+<BODY>
+<form action="" name="form1" method=POST>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td rowspan="5" width="1" bgcolor="CCCCCC"></td>
+            <td bgcolor="CCCCCC" height="1"></td>
+            <td rowspan="4" bgcolor="CCCCCC" width="1"></td>
+        </tr>
+
+        <tr>
+            <td bgcolor="E3E7FF" align="center" height="5"></td>
+        </tr>
+
+        <tr>
+            <td bgcolor="CCCCCC" height="1"></td>
+        </tr>
+
+        <tr>
+            <td bgcolor="F9F9F9" align="center" valign="top">
+                <table width="90%" border="0" align="center" cellpadding="1" cellspacing="1" bgcolor="F5F5F5">
+                    <tr bgcolor="F3F9FF">
+                        <td bgcolor="F5F5F5">
+                            <SCRIPT LANGUAGE="JavaScript">
+                                d = new dTree('d');
+                                d.config.target = "right";
+                                d.config.imageDir = 'js/dtree/img';
+                                d.reSetImagePath();
+                                d.config.folderLinks = false;
+                                d.config.closeSameLevel = true;
+                                var isOpen ;
+                                //根节点
+                                d.add(0, -1, '自行车租赁管理系统');
+                                d.add(1, 0, '基本信息维护');
+                                d.add(2, 0, '车辆业务'); 
+								d.add(6, 0, '卡业务');
+								d.add(7, 0, '查询统计');
+								
+								d.add(11, 1, '组织机构信息', '#', '', 'right');
+                                d.add(12, 1, '基础业务信息', '#', '', 'right');
+                                d.add(13, 1, '车辆信息', '#', '', 'right');
+                               
+                                
+                                d.add(21, 2, '车辆购入', 'buybike.jsp', '', 'right');
+                                d.add(22, 2, '新车入桩', 'bikeruzhuang.html', '', 'right');
+                                d.add(23, 2, '车辆租出', '#', '', 'right');
+                                d.add(24, 2, '车辆归还', '#', '', 'right');
+                                d.add(25, 2, '车辆维修调出', '#', '', 'right');
+                                d.add(26, 2, '车辆维修', '#', '', 'right');
+                                d.add(27, 2, '车辆维修调入', '#', '', 'right');
+                                d.add(28, 2, '车辆调出', '#', '', 'right');
+                                d.add(29, 2, '车辆调入', '#', '', 'right');
+                                d.add(210, 2, '车辆报废', '#', '', 'right');
+                                
+                                d.add(111, 11, '部门', '#', '', 'right');
+                                d.add(112, 11, '权限', '#', '', 'right');
+                                d.add(113, 11, '角色', '#', '', 'right');
+                                d.add(114, 11, '人员登记', 'users/addUser.jsp', '', 'right');
+                                d.add(115, 11, '人员列表', 'ShowUsersServlet', '', 'right');
+                                
+                                d.add(121, 12, '供应商维护', '#', '', 'right');
+                                d.add(122, 12, '办卡', '#', '', 'right');
+                                
+                                d.add(131, 13, '车点信息', '#', '', 'right');
+                                d.add(132, 13, '车桩信息', '#', '', 'right');
+                                d.add(133, 13, '车辆类型信息', '#', '', 'right');
+
+								d.add(61, 6, '卡充值', '#', '', 'right');
+								
+								d.add(71, 7, '车点车辆信息联合查询', '#', '', 'right');
+                                d.add(72, 7, '月度/年度车辆费用统计', 'bikefee.jsp', '', 'right');
+                                d.add(73, 7, '车点使用率信息统计分析', '#', '', 'right');
+                                d.add(74, 7, '实时、卡费用统计', '#', '', 'right');
+                                d.add(75, 7, '月度/年度卡费用统计', '#', '', 'right');
+                                //d.add(8, 2, '添加客户信息', 'customers/addCustomer.jsp', '', 'right');
+                               // d.add(9, 2, '查询客户信息', 'ShowAllCustomerServlet', '', 'right');
+
+								//d.add(10, 3, '添加自行车信息', 'bike/addBike.jsp', '', 'right');
+								//d.add(11, 3, '查询自行车信息', 'ShowBikesServlet', '', 'right');
+
+                                document.write(d);
+                            </script>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td background="images/jao1.gif" colspan="2" align="right"><img
+                    src="images/jao.gif" width="8" height="8"></td>
+        </tr>
+
+    </table>
+</form>
+</BODY>
+</HTML>

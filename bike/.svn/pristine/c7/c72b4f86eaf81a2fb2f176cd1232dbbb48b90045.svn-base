@@ -1,0 +1,44 @@
+package com.aowin.controller.vehicle;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.aowin.model.repair.Pile;
+import com.aowin.service.vehicle.VehicleService;
+
+@Controller
+public class VehicleController {
+  @Autowired
+  private VehicleService bikeService;
+  
+
+  /*1 车辆调出  查询所有车桩信息 */
+  @RequestMapping("/queryAllPileMessage.do")
+ 
+  public String queryAllPileMessage(Model model){
+	   List<Pile> piles=bikeService.queryAllPileMessage();
+	   model.addAttribute("piles", piles);
+	   return "vehicle/bike_away.jsp";
+	   //String json=JSONArray.toJSONString(piles);
+	   //return json;
+  }
+  
+  
+  
+  
+  
+  public VehicleService getBikeService() {
+	return bikeService;
+  }
+
+  public void setBikeService(VehicleService bikeService) {
+	this.bikeService = bikeService;
+  }
+  
+}

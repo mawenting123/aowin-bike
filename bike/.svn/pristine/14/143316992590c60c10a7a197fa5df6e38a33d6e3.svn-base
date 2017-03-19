@@ -1,0 +1,24 @@
+package com.aowin.service.card;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.aowin.dao.card.CardDao;
+import com.aowin.model.card.Card;
+@Service
+public class AddCardService {
+	@Autowired
+	private CardDao cardDao;
+	public boolean addCard(Card card){
+		int num=cardDao.addCard(card);
+		return num>0?true:false;
+			
+	}
+	public CardDao getCardDao() {
+		return cardDao;
+	}
+	public void setCardDao(CardDao cardDao) {
+		this.cardDao = cardDao;
+	}
+
+}

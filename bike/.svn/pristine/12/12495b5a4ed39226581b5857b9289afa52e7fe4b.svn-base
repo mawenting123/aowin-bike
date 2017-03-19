@@ -1,0 +1,15 @@
+package com.aowin.dao.card;
+
+import java.util.List;
+
+import com.aowin.model.card.Card;
+
+public interface ICardDao {
+	
+	public int addCard(Card card);              //填写办卡信息
+	public int addCardInfoRecord(Card card);    //办卡后写入办卡记录表
+	public int selNextCardCode();               //获取卡号
+	public List<Card> queryCards(Card card);    //查询所有办卡信息
+	public Card checkCardCode(Card card);       //办卡时先判断该卡号是否已存在
+	public Card queryByCode(String card_code);  //修改前先查询出该卡号的所有信息
+}

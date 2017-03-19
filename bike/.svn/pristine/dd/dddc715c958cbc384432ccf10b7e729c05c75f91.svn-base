@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aowin.dao.card.ICardDao">	
+   <!-- 办卡:新增办卡信息  插入卡信息-->
+   <insert id="addCard" parameterType="Card">
+      <selectKey keyProperty="card_id" resultType="int" order="BEFORE">
+        select card_id.nextval from dual
+      </selectKey>
+        insert into card values(#{card_id},#{card_code,jdbcType=VARCHAR},#{card_type},#{name,jdbcType=VARCHAR},#{idcard,jdbcType=VARCHAR},#{sex},#{telphone,jdbcType=VARCHAR},#{mobile,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{work,jdbcType=VARCHAR},0,#{monthly_money,jdbcType=VARCHAR},#{frozen_money,jdbcType=VARCHAR},#{wallet_money,jdbcType=VARCHAR},1)
+   </insert>
+   
+   <!-- 办卡:新增办卡信息  插入卡信息记录表-->
+   <insert id="addInfoRecord" parameterType="CardInfoRecord">
+      <selectKey keyProperty="record_id" resultType="int" order="BEFORE">
+        select cardinforecord_id.nextval from dual
+      </selectKey>
+      insert into CARD_INFO_RECORD values(#{record_id},#{card_id},#{info_type},#{create_time},#{user_id},#{remark,jdbcType=VARCHAR})
+   </insert>
+   
+   <!-- 1 办卡:新增办卡信息 判断卡号是否已经存在-->
+   <!-- 2 修改前先查出该卡号的全部信息 -->
+   <select id="queryByCardCode" parameterType="Card" resultType="Card">
+       select * from card 
+       <where>
+       <if test="card_code!=null and card_code!=''">
+           card_code=#{card_code}
+       </if> 
+       <if test="card_id!=null and card_id!=''">
+           and card_id=card_id
+       </if>
+       </where> 
+   </select>
+   
+   <!-- 办卡:获取卡号 -->
+   <select id="selNextCardCode" resultType="int">
+        select decode(max(card_code)+1,null,1000001,max(card_code)+1) from card where length(card_code)=7
+   </select>
+   
+   <!-- 办卡:根据条件查询办卡信息 -->
+   <select id="queryCards" parameterType="Card" resultType="Card">
+      select * from card 
+      <where>
+         <if test="card_code!=''">
+            and card_code like '%'||#{card_code}||'%'
+         </if>
+         <if test="card_type!=0">
+            and card_type like '%'||#{card_type}||'%'
+         </if>
+         <if test="idcard!=''">
+            and idcard like '%'||#{idcard}||'%'
+         </if>
+         <if test="name!=''">
+            and name like '%'||#{name}||'%'
+         </if>
+         <if test="sex!=-1">
+            and sex like '%'||#{sex}||'%'
+         </if>
+      </where>
+      order by card_code
+   </select>
+   
+   
+   
+   <!-- 修改 -->
+   <delete id="updateOneCard" parameterType="Card">
+      update card set
+	      card_code=#{card_code},card_type=#{card_type},name=#{name},
+	      idcard=#{idcard},sex=#{sex},telphone=#{telphone},mobile=#{mobile},
+	      email=#{email},address=#{address},work=#{work},monthly_money=#{monthly_money,jdbcType=VARCHAR},
+	      frozen_money=#{frozen_money,jdbcType=VARCHAR},wallet_money=#{wallet_money,jdbcType=VARCHAR}
+      where card_code=#{card_code}
+   </delete>
+   
+   <!-- 挂失卡 -->
+   <update id="reportLossCard" parameterType="CardInfoRecord">
+       update card set status=2 where card_id=#{card_id}
+   </update>
+   
+    <!-- 注销  修改办卡信息  卡费用流水 卡信息记录表 -->
+   <update id="cancellation_card" parameterType="CardRecord">
+       update card set zxbj=1,monthly_money=0,frozen_money=0,wallet_money=0 where card_id=#{card_id}
+   </update>
+   <insert id="addCard_record" parameterType="CardRecord">
+       <selectKey keyProperty="record_id" resultType="int" order="BEFORE">
+            select cardrecord_id.nextval from dual
+       </selectKey>
+       insert into card_record(record_id,card_id,fee_type,
+       chg_monthly_money,chg_wallet_money,chg_frozen_money,
+       create_time,user_id,remark,zxbj)
+         select #{record_id},#{card_id},#{fee_type},
+         -monthly_money,-wallet_money,-frozen_money,
+         #{create_time},#{user_id},#{remark},1
+         from card where card_id=#{card_id}
+   
+   </insert>
+
+   
+  
+   
+</mapper>

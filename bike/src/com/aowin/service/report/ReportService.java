@@ -1,0 +1,71 @@
+package com.aowin.service.report;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.aowin.dao.report.IReportDao;
+import com.aowin.model.card.Card;
+import com.aowin.model.card.CardRecord;
+import com.aowin.model.report.RealTimeCardReport;
+import com.aowin.model.report.YearAndMonthCardFeeReport;
+
+
+@Service
+public class ReportService {
+   @Autowired
+   private IReportDao reportDao;
+   
+   //实时、卡费用统计  每张卡的统计总充值金额，总充值次数，总消费金额，现冻结金额，
+   //现可用余额，总租车小时数，总租车次数，单次租车时间等信息。
+   public List<RealTimeCardReport> realTimeReportEachCard(Card card){
+	   List<RealTimeCardReport> report=reportDao.realTimeReportEachCard(card);
+	   return report;
+   }
+
+    //提供该卡的费用流水，按时间降序排列。
+	public List<CardRecord> query_card_record_byid(Card card){
+		List<CardRecord> records=reportDao.query_card_record_byid(card);
+	    return records;
+	}
+   
+	//月度/年度卡费用统计
+	public List<YearAndMonthCardFeeReport> cardFeeReportEachCard(YearAndMonthCardFeeReport query){
+		List<YearAndMonthCardFeeReport> cardFees=reportDao.cardFeeReportEachCard(query);
+		return cardFees;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+   
+   
+   public IReportDao getReportDao() {
+	return reportDao;
+   }
+
+   public void setReportDao(IReportDao reportDao) {
+	this.reportDao = reportDao;
+   }
+   
+   
+   
+   
+   
+   
+  
+   
+   
+}

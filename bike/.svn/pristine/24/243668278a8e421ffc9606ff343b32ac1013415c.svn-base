@@ -1,0 +1,88 @@
+package com.aowin.model.repair;
+
+public class Deploy {
+	private Integer deploy_id;		//明细id
+	private Integer bicycle_id;		//车辆id
+	private Integer from_pile_id;	//调出车桩
+	private Integer to_pile_id;		//调入车桩
+	private Integer from_card_id;	//调出人卡id
+	private String from_time;		//调出时间
+	private Integer to_card_id;		//调入人卡id
+	private String to_time;			//调入时间
+	private String to_reason;		//调入原因
+	private String from_reason;		//调出原因
+	private String remark;			//备注
+	private String status;			//状态
+	public Integer getDeploy_id() {
+		return deploy_id;
+	}
+	public void setDeploy_id(Integer deploy_id) {
+		this.deploy_id = deploy_id;
+	}
+	public Integer getBicycle_id() {
+		return bicycle_id;
+	}
+	public void setBicycle_id(Integer bicycle_id) {
+		this.bicycle_id = bicycle_id;
+	}
+	public Integer getFrom_pile_id() {
+		return from_pile_id;
+	}
+	public void setFrom_pile_id(Integer from_pile_id) {
+		this.from_pile_id = from_pile_id;
+	}
+	public Integer getTo_pile_id() {
+		return to_pile_id;
+	}
+	public void setTo_pile_id(Integer to_pile_id) {
+		this.to_pile_id = to_pile_id;
+	}
+	public Integer getFrom_card_id() {
+		return from_card_id;
+	}
+	public void setFrom_card_id(Integer from_card_id) {
+		this.from_card_id = from_card_id;
+	}
+	public String getFrom_time() {
+		return from_time;
+	}
+	public void setFrom_time(String from_time) {
+		this.from_time = from_time;
+	}
+	public Integer getTo_card_id() {
+		return to_card_id;
+	}
+	public void setTo_card_id(Integer to_card_id) {
+		this.to_card_id = to_card_id;
+	}
+	public String getTo_time() {
+		return to_time;
+	}
+	public void setTo_time(String to_time) {
+		this.to_time = to_time;
+	}
+	public String getTo_reason() {
+		return to_reason;
+	}
+	public void setTo_reason(String to_reason) {
+		this.to_reason = to_reason;
+	}
+	public String getFrom_reason() {
+		return from_reason;
+	}
+	public void setFrom_reason(String from_reason) {
+		this.from_reason = from_reason;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+}

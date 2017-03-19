@@ -1,0 +1,221 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>My JSP 'queryCard.jsp' starting page</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<link rel="stylesheet" href="css/content.css" />
+	<style type="text/css">
+	   th{color:#00A1E6}
+	   table{table-layout: fixed;}
+	</style>
+	
+	<script type="text/javascript" src="tool/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="js/card/public.js"></script>
+    <script type="text/javascript">
+        $(function(){
+           $("#create_time").val(getNowTime());
+           //根据条件查询后  将之前的查询条件放在页面上
+           if(${not empty sex}){
+              $("#sex").val("${sex}");
+           }
+           if(${not empty card_type}){
+              $("#card_type").val("${card_type}");
+           }
+           if(${not empty mess}){
+              alert("${mess}");
+           }
+       })
+       //调到办卡页面
+        function addCard(){
+           location.href="card/addCard.jsp";
+        }
+        
+        //修改
+        function toUpdate(obj,zxbj){
+           if(zxbj==1||zxbj=="已注销"){
+               alert("已注销,不可修改");
+           }else{
+               location.href="card/updateCardMess.jsp?card_code_up="+obj;
+           }
+        }
+        //挂失
+        function toReportLoss(obj){
+           var flag=window.confirm("确认挂失?");
+           if(flag){
+             var time=$("#create_time").val();
+             var user=$("#user_id").val();
+             location.href="reportLossCard.do?card_id="+obj+"&create_time="+time+"&user_id="+user;
+           }
+        }
+        
+        //注销
+        function toCancellation(obj,card_id){
+              //先判断账户金额是否为0  如果不为0 需要写清空原因  为0不用写
+              $.ajax({
+              url:"queryByCode.do",
+              data:{"card_code":obj},
+              success:function(res){
+                  var card=eval("("+res+")");
+                  var monthly_money=card.monthly_money;
+                  var wallet_money=card.wallet_money;
+                  var frozen_money=card.frozen_money;
+                  if(monthly_money>0||wallet_money>0||frozen_money>0){
+                     var flag=window.confirm("账户金额不为0,是否注销?");
+                     if(flag){
+                        mess(card_id);
+                     }
+                  }else{
+                     mess(card_id);
+                  }
+              }
+           })
+        }
+        //清空原因的弹框
+        function mess(card_id){
+          var info=window.prompt("账户金额将清空,请填写清空原因");
+          if(info==""){
+              alert("请填写清空原因");
+              mess();
+          }else if(info!=null){
+              //注销:修改办卡信息  卡费用流水 卡信息记录表
+              alert("注销");
+              var create_time=$("#create_time").val();
+              var user_id=$("#user_id").val();
+              location.href="cancellationCard.do?card_id="+card_id+"&create_time="+create_time+"&user_id="+user_id+"&remark="+info;
+          }
+        }
+        
+        
+        
+    </script>
+    
+
+  </head>
+  
+  <body>
+  <input type="button" style="background:#a5cf4c" value="办卡" onclick="addCard()"/>
+  
+     <form action="queryCondition.do" method="post">
+       <table>
+		<TR>
+			<TD>卡号</TD>
+			<TD>
+			  <input type="text" id="card_code" name="card_code" value="${card_code}"/>
+			</TD>
+		    <TD>卡类型</TD>
+			<TD>
+				<select id="card_type" name="card_type" value="${card_type}">
+					<option value="0">请选择</option>
+					<option value="1">A卡</option>
+					<option value="2">D卡</option>
+					<option value="3">市民卡/社保卡</option>
+					<option value="4">员工卡</option>
+					<option value="5">调度卡</option>
+					<option value="6">维修卡</option>
+				</select>
+			</TD>
+		    <TD>身份证</TD>
+			<TD>
+			  <input name="idcard" id="idcard" value="${idcard}"/>
+			</TD>
+		    <TD>姓名</TD>
+			<TD><input name="name" id="name" value="${name}"/></TD>
+	        <TD>性别</TD>
+			<TD>
+				<SELECT NAME="sex" id="sex" selected="${sex}">
+					<option value="-1">请选择</option>
+					<option value="1">男</option>
+					<option value="0">女</option>
+				</SELECT>
+			</TD>
+		<td><input type="submit"  value="查询"/></td>
+		</tr>
+		</table>
+	</form>
+	
+	<c:forEach items="${cards}" var="temp" varStatus="i">
+	<table border="1px" width="100%" cellspacing="0px">
+	    <tr align="center">
+	          <td rowspan="4" width="20px">${i.count}</td>
+	      <th >卡号</th>
+	          <td id="card_code_up">${temp.card_code}</td>
+	      <th>卡类型</th>
+		      <td>
+		        <c:if test="${temp.card_type==1}">A卡</c:if>
+		        <c:if test="${temp.card_type==2}">D卡</c:if>
+		        <c:if test="${temp.card_type==3}">市民卡/社保卡</c:if>
+		        <c:if test="${temp.card_type==4}">员工卡</c:if>
+		        <c:if test="${temp.card_type==5}">调度卡</c:if>
+		        <c:if test="${temp.card_type==6}">维修卡</c:if>
+		      </td>
+	      <th>姓名</th>
+	      		<td>${temp.name}</td>
+	      <th>身份证号</th>
+	      		<td>${temp.idcard}</td>
+	      <th>性别</th>
+			     <td>
+			        <c:if test="${temp.sex==1}">男</c:if>
+			        <c:if test="${temp.sex==0}">女</c:if>
+			     </td>
+	     </tr>
+	     <tr align="center">
+	      <th width="8%">联系电话</th>
+	      		<td>${temp.telphone}</td>
+	      <th>手机</th>
+	      		<td>${temp.mobile}</td>
+	      <th>邮箱</th>
+	      		<td>${temp.email}</td>
+	      <th>住址</th>
+	      		<td>${temp.address}</td>
+	      <th>工作单位</th>
+	      		<td>${temp.work}</td>
+	      </tr>	
+	      
+	      <tr align="center">
+	      <th>注销标志</th>
+	             <td>
+				      <c:if test="${temp.zxbj==0}">正常</c:if>
+				      <c:if test="${temp.zxbj==1}">已注销</c:if>
+			     </td>
+	      <th>月票金额</th>
+	      		<td>${temp.monthly_money}</td>
+	      <th>冻结金额</th>
+	      		<td>${temp.frozen_money}</td>
+	      <th>钱包余额</th>
+	      		<td>${temp.wallet_money}</td>
+	      <th>卡状态</th>
+			    <td>
+				      <c:if test="${temp.status==1}">正常</c:if>
+				      <c:if test="${temp.status==2}">锁定</c:if>
+			     </td>
+	      
+	    </tr>
+	    <tr align="right">
+	          <td colspan="10" >
+		        <input type="button" style="background:#00FFFF" value="修改" onclick="toUpdate(${temp.card_code},${temp.zxbj})"/>
+		        <input type="button" style="background:#FF7F50" value="挂失" onclick="toReportLoss(${temp.card_id})"/>
+		        <input type="button" style="background:#FF0000" value="注销" onclick="toCancellation('${temp.card_code}',${temp.card_id})"/>
+		      </td>
+	    </tr>
+	</table>
+	<br/>
+	   </c:forEach>
+	    <input type="hidden" name="create_time" id="create_time"/>
+        <input type="hidden" name="user_id" id="user_id" value="1001"/>
+	
+  </body>
+</html>

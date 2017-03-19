@@ -1,0 +1,10 @@
+package com.aowin.dao.vehicle;
+
+import java.util.List;
+
+import com.aowin.model.repair.Pile;
+
+public interface IVehicleDao {
+	/*1 车辆调出  查询所有车桩信息 */
+    public List<Pile> queryAllPileMessage();
+}

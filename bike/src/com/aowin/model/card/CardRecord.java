@@ -1,0 +1,80 @@
+package com.aowin.model.card;
+
+public class CardRecord {
+	private Integer record_id;			//记录id
+	private Integer card_id;			//卡id
+	private Integer fee_type;			//费用类型
+	private Double chg_monthly_money;	//月票变化金额
+	private Double chg_wallet_money;	//钱包变化金额
+	private Double chg_frozen_money;	//冻结变化金额
+	private String create_time;			//发生时间
+	private Integer user_id;			//创建人
+	private String remark;				//备注
+	private Integer zxbj;				//注销标志
+	
+	
+	public CardRecord() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public Integer getRecord_id() {
+		return record_id;
+	}
+	public void setRecord_id(Integer record_id) {
+		this.record_id = record_id;
+	}
+	public Integer getCard_id() {
+		return card_id;
+	}
+	public void setCard_id(Integer card_id) {
+		this.card_id = card_id;
+	}
+	public Integer getFee_type() {
+		return fee_type;
+	}
+	public void setFee_type(Integer fee_type) {
+		this.fee_type = fee_type;
+	}
+	public Double getChg_monthly_money() {
+		return chg_monthly_money;
+	}
+	public void setChg_monthly_money(Double chg_monthly_money) {
+		this.chg_monthly_money = chg_monthly_money;
+	}
+	public Double getChg_wallet_money() {
+		return chg_wallet_money;
+	}
+	public void setChg_wallet_money(Double chg_wallet_money) {
+		this.chg_wallet_money = chg_wallet_money;
+	}
+	public Double getChg_frozen_money() {
+		return chg_frozen_money;
+	}
+	public void setChg_frozen_money(Double chg_frozen_money) {
+		this.chg_frozen_money = chg_frozen_money;
+	}
+	public String getCreate_time() {
+		return create_time;
+	}
+	public void setCreate_time(String create_time) {
+		this.create_time = create_time;
+	}
+	public Integer getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+	public String getRemark() {
+		return remark;
+	}
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+	public Integer getZxbj() {
+		return zxbj;
+	}
+	public void setZxbj(Integer zxbj) {
+		this.zxbj = zxbj;
+	}
+}

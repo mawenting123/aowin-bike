@@ -1,0 +1,75 @@
+package com.aowin.controller.card;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.aowin.model.card.Card;
+import com.aowin.model.card.CardRecord;
+import com.aowin.service.card.CardService;
+import com.aowin.service.card.ChargeCardService;
+
+@Controller
+public class ChargeCardController {
+    @Autowired
+    private ChargeCardService chargeService;
+
+    //月票首充不低于50元   判断是否是当月首充
+    @RequestMapping("/ifFirstMonthly.do")
+    @ResponseBody
+    public String ifFirstMonthly(String card_id,Model model){
+    	List<CardRecord> list=chargeService.ifFirstMonthly(card_id);
+		String json=JSONArray.toJSONString(list);
+		return json;
+		
+	}
+    
+    //月票充值 
+    @RequestMapping("/charge_mon.do")
+    public String charge_mon(String chargeMoney,Card card,CardRecord record,Model model){
+    	card.setMonthly_money(Double.parseDouble(chargeMoney));
+    	boolean flag=chargeService.charge_mon(card, record);
+    	if(flag){
+    	    model.addAttribute("mess", "月票充值成功");
+    	    model.addAttribute("card_code_1",card.getCard_code());
+    	}else{
+    		model.addAttribute("mess", "月票充值失败");
+    	}
+    	return "card/chargeCard.jsp";
+    }
+    
+    
+    //钱包充值 
+    @RequestMapping("/charge_no_mon.do")
+    public String charge_no_mon(String chargeMoney,Card card,CardRecord record,Model model){
+    	card.setWallet_money(Double.parseDouble(chargeMoney));
+    	boolean flag=chargeService.charge_no_mon(card, record);
+    	if(flag){
+    		model.addAttribute("mess", "钱包充值成功");
+    		model.addAttribute("card_code_1",card.getCard_code());
+    	}else{
+    		model.addAttribute("mess", "钱包充值失败");
+    	}
+    	return "card/chargeCard.jsp";
+    }
+    
+    
+    
+    
+    
+    
+	public ChargeCardService getChargeService() {
+		return chargeService;
+	}
+
+	public void setChargeService(ChargeCardService chargeService) {
+		this.chargeService = chargeService;
+	}
+    
+}

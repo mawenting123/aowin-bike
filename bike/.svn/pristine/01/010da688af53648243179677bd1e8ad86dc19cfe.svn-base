@@ -1,0 +1,5 @@
+package com.aowin.model.card;
+
+public class Card {
+   
+}

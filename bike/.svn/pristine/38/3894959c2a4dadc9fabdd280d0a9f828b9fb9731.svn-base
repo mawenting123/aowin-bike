@@ -1,0 +1,33 @@
+package com.aowin.service.card;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.aowin.dao.card.ICardDao;
+import com.aowin.model.card.Card;
+@Service
+public class CardService {
+	@Autowired
+	private ICardDao cardDao;
+	public int addCard(Card card){
+		int num=cardDao.addCard(card);
+		return num;
+			
+	}
+	//一进入新增页面就显示下一个卡号
+	public int selCardCode(){
+		int cardCode=cardDao.selNextCardCode();
+		return cardCode;
+	}
+	
+	
+	
+	
+	public ICardDao getCardDao() {
+		return cardDao;
+	}
+	public void setCardDao(ICardDao cardDao) {
+		this.cardDao = cardDao;
+	}
+
+}

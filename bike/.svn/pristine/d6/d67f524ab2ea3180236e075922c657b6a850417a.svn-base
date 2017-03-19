@@ -1,0 +1,8 @@
+package com.aowin.dao.card;
+
+import com.aowin.model.card.Card;
+
+public interface CardDao {
+	
+	public int addCard(Card card);
+}

@@ -1,0 +1,80 @@
+package com.aowin.service.vehicle;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+import com.aowin.dao.card.ICardDao;
+import com.aowin.dao.vehicle.IVehicleDao;
+import com.aowin.model.card.Card;
+import com.aowin.model.repair.Deal;
+import com.aowin.model.repair.Deploy;
+import com.aowin.model.repair.Info;
+import com.aowin.model.repair.Pile;
+
+
+@Service
+public class VehicleService {
+   @Autowired
+   private IVehicleDao bikeDao;
+   @Autowired
+   private ICardDao cardDao;
+   
+   /*1 车辆调出  查询所有车桩信息 */
+   public List<Pile> queryAllPileMessage(){
+	   List<Pile> piles=bikeDao.queryAllPileMessage();
+	   return piles;
+   }
+   /*1 车辆调出 查询在桩  且车辆销毁日期为空的车辆 */
+   public List<Info> queryAllBikeMessage(Pile pile){
+	   List<Info> bikes=bikeDao.queryAllBikeMessage(pile);
+	   return bikes;
+   }
+   
+   //员工卡才能调出  根据卡号判断 判断卡类型是否是4 员工卡
+   public Card ifEmployeeCard(Card card){
+	   Card c=bikeDao.ifEmployeeCard(card);
+	   return c;
+   }
+   
+   //车辆调出  1业务流水 2车辆调配明细 3车辆信息 4车桩
+   public boolean bicycle_away(Card card,Info info,Pile pile,Deploy deploy,Deal deal){
+	   Card getCard=cardDao.queryByCardCode(card);
+	   
+	   
+	   //deploy
+	   deploy.setBicycle_id(info.getBicycle_id());
+	   deploy.setFrom_pile_id(pile.getPile_id());
+	   deploy.setFrom_card_id(getCard.getCard_id());
+	   int a=bikeDao.updateBicycleStatus_4(info);
+	   int b=bikeDao.updatePileStatus_2(pile);
+	   int c=bikeDao.addBicyleDeploy(deploy);
+	   //deal
+	   deal.setRecord_id(deploy.getDeploy_id());
+	   deal.setCard_id(getCard.getCard_id());
+	   deal.setBicycle_id(info.getBicycle_id());
+	   deal.setPile_id(pile.getPile_id());
+	   int d=bikeDao.addBicyleDeal(deal);
+	   return true;
+	   
+   } 
+   
+   public IVehicleDao getBikeDao() {
+	  return bikeDao;
+   }
+
+   public void setBikeDao(IVehicleDao bikeDao) {
+	  this.bikeDao = bikeDao;
+   }
+   public ICardDao getCardDao() {
+	  return cardDao;
+   }
+   public void setCardDao(ICardDao cardDao) {
+	  this.cardDao = cardDao;
+   }
+   
+   
+   
+}

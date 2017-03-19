@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aowin.dao.vehicle.IVehicleDao">
+  <!--查询所有车桩的信息  -->
+  <select id="queryAllPileMessage" resultType="Pile">
+     select * from bicycle_pile where DISASSEMBLY_TIME is null
+  </select>
+  
+  <!--根据车桩查询所有在桩,未报废车辆的信息  -->
+  <select id="queryAllBikeMessage" parameterType="Pile" resultType="Info">
+     select * from BICYCLE_INFO where destory_date is null 
+     and status=3 and pile_id=#{pile_id}
+  </select>
+  
+  <!-- 员工卡才能调出 -->
+  <select id="ifEmployeeCard" parameterType="Card" resultType="Card">
+     select * from card where card_code=#{card_code} and card_type=4
+  </select>
+  
+  <!-- 被选中的车辆的车辆状态改成（4：普通调出） -->
+  <update id="updateBicycleStatus_4" parameterType="Info">
+     update BICYCLE_INFO set status=4 where bicycle_id=#{bicycle_id}
+  </update>
+  
+  <!-- 将所在车桩的状态改成（2：无车） -->
+  <update id="updatePileStatus_2" parameterType="Pile">
+     update bicycle_pile set status=2 where pile_id=#{pile_id}
+  </update>
+  
+  <!-- 车辆调配明细，调入的内容可以不填写，调出原因填写（4：普通调出）。 -->
+  <insert id="addBicyleDeploy" parameterType="Deploy">
+    <selectKey keyProperty="deploy_id" resultType="int" order="BEFORE">
+       select bicycle_deploy_id.nextval from dual
+    </selectKey>
+    <!-- 明细Id,车辆id,调出车桩,调出时间,调出人卡id,调出原因,备注,状态 -->
+     insert into bicycle_deploy(deploy_id,bicycle_id,from_pile_id,
+     from_card_id,from_time,from_reason,remark,status) 
+     values(#{deploy_id},#{bicycle_id},#{from_pile_id},
+     #{from_card_id},to_char(sysdate,'yyyy-mm-dd hh:mm:ss'),'4',
+     #{remark,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 车辆业务流水，业务类型为（4：普通调出），关联的业务记录id填写车辆调配明细id，
+业务名称填写(普通调出)，是否发生费用为（0：未发生），费用金额填0。 -->
+    <insert id="addBicyleDeal" parameterType="Deal">
+      <selectKey keyProperty="deal_id" resultType="int" order="BEFORE">
+          select bicycle_deal_id.nextval from dual
+      </selectKey>
+insert into bicycle_deal(deal_id,create_time,deal_name,deal_type,
+record_id,card_id,is_fee,chg_money,bicycle_id,pile_id,user_id) 
+values(#{deal_id},to_char(sysdate,'yyyy-mm-dd hh:mm:ss'),'普通调出','4',
+#{record_id},#{card_id},0,0,#{bicycle_id},
+#{pile_id},#{user_id})
+    </insert>
+  
+</mapper>

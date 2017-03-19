@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aowin.dao.card.ICardDao">	
+   <insert id="addCard" parameterType="Card">
+      <selectKey keyProperty="card_id" resultType="int" order="BEFORE">
+        select seq_test.nextval from dual
+      </selectKey>
+        insert into card values(#{card_id},#{card_code},#{card_type},#{name},#{idcard},#{sex},#{telphone,jdbcType=VARCHAR},#{mobile},#{email},#{address,jdbcType=VARCHAR},#{work,jdbcType=VARCHAR},#{zxbj,jdbcType=VARCHAR},#{monthly_money,jdbcType=VARCHAR},#{frozen_money,jdbcType=VARCHAR},#{wallet_money,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR})
+   </insert>
+   
+   <select id="selNextCardCode" resultType="int">
+        select decode(max(card_code)+1,null,1000001,max(card_code)+1) from card 
+   </select>
+   
+</mapper>

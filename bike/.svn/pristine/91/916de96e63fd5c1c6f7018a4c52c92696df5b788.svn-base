@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aowin.dao.card.IChargeDao">
+   <!-- 月票首充不低于50元   判断是否是当月首充-->
+   <select id="ifFirstMonthly" parameterType="string" resultType="CardRecord">
+       select * from card_record where card_id=#{card_id}
+       and substr(create_time,6,2)=to_char(sysdate,'mm')
+       and chg_monthly_money>=50
+   </select>
+   
+   <update id="updateMoney" parameterType="Card">
+       update card 
+       <set>
+       <if test="monthly_money!=null">
+          monthly_money=nvl(monthly_money,0)+#{monthly_money},
+       </if>
+       <if test="wallet_money!=null">
+          wallet_money=nvl(wallet_money,0)+#{wallet_money}
+       </if>
+       </set> 
+       where card_id=#{card_id}
+   </update>
+   
+   <!-- 卡充值 -->
+      <insert id="chargeAddCard_record" parameterType="CardRecord">
+       <selectKey keyProperty="record_id" resultType="int" order="BEFORE">
+            select cardrecord_id.nextval from dual
+       </selectKey>
+insert into card_record(record_id,card_id,fee_type,create_time,chg_monthly_money,
+chg_wallet_money,chg_frozen_money,user_id,remark,zxbj) 
+values(#{record_id},#{card_id},#{fee_type},#{create_time},#{chg_monthly_money},#{chg_wallet_money},#{chg_frozen_money},
+#{user_id},#{remark,jdbcType=VARCHAR},0) 
+         
+      </insert>
+</mapper>

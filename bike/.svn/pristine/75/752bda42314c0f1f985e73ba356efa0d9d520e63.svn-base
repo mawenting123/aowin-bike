@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aowin.dao.card.ICardDao">	
+   <!-- 办卡:新增办卡信息  插入卡信息-->
+   <insert id="addCard" parameterType="Card">
+      <selectKey keyProperty="card_id" resultType="int" order="BEFORE">
+        select seq_test.nextval from dual
+      </selectKey>
+        insert into card values(#{card_id},#{card_code,jdbcType=VARCHAR},#{card_type},#{name,jdbcType=VARCHAR},#{idcard,jdbcType=VARCHAR},#{sex},#{telphone,jdbcType=VARCHAR},#{mobile,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{address,jdbcType=VARCHAR},#{work,jdbcType=VARCHAR},#{zxbj,jdbcType=VARCHAR},#{monthly_money,jdbcType=VARCHAR},#{frozen_money,jdbcType=VARCHAR},#{wallet_money,jdbcType=VARCHAR},1)
+   </insert>
+   
+   <!-- 办卡:新增办卡信息  插入卡信息记录表-->
+   <insert id="addCardInfoRecord" parameterType="Card">
+      <selectKey keyProperty="record_id" resultType="int" order="BEFORE">
+        select cardinforecord_id.nextval from dual
+      </selectKey>
+      insert into CARD_INFO_RECORD values(#{record_id},#{card_id},1,#{create_time},#{user_id},#{remark,jdbcType=VARCHAR})
+   </insert>
+   
+   <!-- 办卡:新增办卡信息 判断卡号是否已经存在-->
+   <select id="checkCardCode" parameterType="Card" resultType="Card">
+       select * from card where card_code=#{card_code}
+   </select>
+   
+   <!-- 办卡:获取卡号 -->
+   <select id="selNextCardCode" resultType="int">
+        select decode(max(card_code)+1,null,1000001,max(card_code)+1) from card 
+   </select>
+   
+   <!-- 办卡:根据条件查询办卡信息 -->
+   <select id="queryCards" parameterType="Card" resultType="Card">
+      select * from card 
+      <where>
+         <if test="card_code!=''">
+            and card_code like '%'||#{card_code}||'%'
+         </if>
+         <if test="card_type!=0">
+            and card_type like '%'||#{card_type}||'%'
+         </if>
+         <if test="idcard!=''">
+            and idcard like '%'||#{idcard}||'%'
+         </if>
+         <if test="name!=''">
+            and name like '%'||#{name}||'%'
+         </if>
+         <if test="sex!=-1">
+            and sex like '%'||#{sex}||'%'
+         </if>
+      </where>
+   </select>
+   
+   <select id="queryByCode" parameterType="string" resultType="Card">
+      select * from card where card_code=#{card_code}
+   </select>
+</mapper>

@@ -1,0 +1,36 @@
+package com.aowin.service.vehicle;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+
+import com.aowin.dao.vehicle.IVehicleDao;
+import com.aowin.model.repair.Pile;
+
+
+@Service
+public class VehicleService {
+   @Autowired
+   private IVehicleDao bikeDao;
+
+   /*1 车辆调出  查询所有车桩信息 */
+   public List<Pile> queryAllPileMessage(){
+	   List<Pile> piles=bikeDao.queryAllPileMessage();
+	   return piles;
+   }
+   
+   
+   
+   public IVehicleDao getBikeDao() {
+	  return bikeDao;
+   }
+
+   public void setBikeDao(IVehicleDao bikeDao) {
+	  this.bikeDao = bikeDao;
+   }
+   
+   
+   
+}

@@ -1,0 +1,35 @@
+package com.aowin.controller.card;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.aowin.model.card.Card;
+import com.aowin.service.card.AddCardService;
+
+@Controller
+public class CardController {
+	@Autowired
+    private AddCardService addCardService;
+
+	@RequestMapping("/addCard.do")
+	public String addCard(Card card,Model model){
+		if(addCardService.addCard(card)){
+			model.addAttribute("mess", "插入成功");
+		}else{
+			model.addAttribute("mess", "插入失败");
+			
+		}
+		return "test.jsp";
+	}
+	
+	
+	public AddCardService getAddCardService() {
+		return addCardService;
+	}
+
+	public void setAddCardService(AddCardService addCardService) {
+		this.addCardService = addCardService;
+	}
+}

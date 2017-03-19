@@ -1,0 +1,81 @@
+package com.aowin.controller.report;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.aowin.model.card.Card;
+import com.aowin.model.card.CardRecord;
+import com.aowin.model.report.RealTimeCardReport;
+import com.aowin.service.report.ReportService;
+
+@Controller
+public class ReportController {
+   @Autowired
+   private ReportService reportService;
+   
+   //实时、卡费用统计  每张卡的统计总充值金额，总充值次数，总消费金额，现冻结金额，
+   //现可用余额，总租车小时数，总租车次数，单次租车时间等信息。
+   @RequestMapping("/realTimeReportEachCard.do")
+   public String realTimeReportEachCard(Card card,Model model){
+	   List<RealTimeCardReport> eachCard=reportService.realTimeReportEachCard(card);
+	   Integer total_record_num=0;
+	   Float total_charge_money=0.0f;
+	   Integer total_charge_count=0;
+	   Float total_frozen_money=0.0f;
+	   Float total_statin=0.0f;
+	   Float total_rent_money=0.0f;
+	   Float total_rent_hour=0.0f;
+	   Integer total_rent_count=0;
+	   for(int i=0;i<eachCard.size();i++){
+		   total_record_num+=eachCard.get(i).getRent_record();
+		   total_charge_money+=eachCard.get(i).getCharge_money();
+		   total_charge_count+=eachCard.get(i).getCharge_count();
+		   total_frozen_money+=eachCard.get(i).getFrozen_money();
+		   total_statin+=eachCard.get(i).getStatin();
+		   total_rent_money+=eachCard.get(i).getRent_money();
+		   total_rent_hour+=eachCard.get(i).getRent_hour();
+		   total_rent_count+=eachCard.get(i).getRent_count();
+	   }
+	   RealTimeCardReport total=new RealTimeCardReport();
+	   total.setTotal_num(eachCard.size());
+	   total.setTotal_charge_count(total_charge_count);
+	   total.setTotal_charge_money(total_charge_money);
+	   total.setTotal_frozen_money(total_frozen_money);
+	   total.setTotal_record_num(total_record_num);
+	   total.setTotal_rent_count(total_rent_count);
+	   total.setTotal_rent_hour(total_rent_hour);
+	   total.setTotal_rent_money(total_rent_money);
+	   total.setTotal_statin(total_statin);
+	   total.setTotal_record_num (total_record_num);
+	   //所有租车卡累计数据
+	   model.addAttribute("totalMess", total);
+	   //每张租车卡的累计
+	   model.addAttribute("eachCard", eachCard);
+	   //查询条件
+	   model.addAttribute("query_card_code", card.getCard_code());
+	   model.addAttribute("query_name", card.getName());
+	   return "report/RealTimeCardReport.jsp";
+   }
+   
+    //提供该卡的费用流水，按时间降序排列。
+    @RequestMapping("/query_card_record_byid.do")
+	public String query_card_record_byid(Card card,Model model){
+		List<CardRecord> records=reportService.query_card_record_byid(card);
+	    model.addAttribute("records", records);
+		return "report/showCardRecord.jsp";
+	}
+	
+   public ReportService getReportService() {
+	  return reportService;
+   }
+
+   public void setReportService(ReportService reportService) {
+	  this.reportService = reportService;
+   }
+   
+   
+}

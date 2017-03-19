@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aowin.dao.report.IReportDao">
+   
+   <!--实时、卡费用统计  -->
+<select id="realTimeReportEachCard" parameterType="Card" resultType="RealTimeCardReport">
+	select a.card_id,a.card_code,a.name,a.idcard,nvl(a.frozen_money,0)frozen_money,
+	(nvl(a.wallet_money,0)+nvl(a.monthly_money,0)) statin,
+	case when b.card_id is not null then 1 else 0 end rent_record,
+	nvl(c.rent_money,0)rent_money,nvl(c.rent_count,0)rent_count,nvl(c.rent_hour,0)rent_hour,
+	nvl(d.charge_money,0)charge_money,nvl(d.charge_count,0)charge_count
+	from card a 
+	left join (select distinct card_id from BICYCLE_RECORD) b on a.card_id=b.card_id
+	left join (select card_id,sum(money)rent_money,count(*)rent_count,
+	             sum(24*(to_date(return_time,'yyyy-mm-dd hh:mi:ss')-to_date(rent_time,'yyyy-mm-dd hh:mi:ss')))rent_hour
+	             from BICYCLE_RECORD where money is not null group by card_id)c on b.card_id=c.card_id 
+	left join (select card_id,sum(nvl(chg_monthly_money,0)+nvl(chg_wallet_money,0))charge_money,
+	           count(*) charge_count from CARD_RECORD where fee_type in(1,2) group by card_id) d on a.card_id=d.card_id
+	where a.card_type in(1,2,3) 
+	<if test="card_code!=null">
+	   and card_code like '%'||#{card_code}||'%'
+	</if>
+	<if test="name!=null">
+	   and name like '%'||#{name}||'%'
+	</if>
+	order by a.card_id
+</select>
+
+
+<!-- 提供牟卡的费用流水 -->
+<select id="query_card_record_byid" parameterType="Card" resultType="CardRecord">
+   select * from CARD_RECORD where card_id=#{card_id} order by create_time desc
+</select>
+
+     
+<!--月度/年度卡费用统计  -->
+<select id="cardFeeReportEachCard" resultType="YearAndMonthCardFeeReport">
+select a.card_id,c.card_code,a.year,a.month,nvl(a.charge_money,0)charge_money,
+nvl(a.rent_money,0)rent_money,nvl(b.rent_hour,0)rent_hour,
+nvl(b.rent_count,0)rent_count,nvl(b.avg_rent_hour,0)avg_rent_hour
+from (select card_id,substr(create_time,0,4)year,substr(create_time,6,2)month,
+sum(case when fee_type in(1,2) then chg_monthly_money else 0 end+case when fee_type in(1,2) then chg_wallet_money else 0 end)charge_money,
+-sum(case when fee_type in(4) then chg_monthly_money else 0 end+case when fee_type in(4) then chg_wallet_money else 0 end)rent_money
+from CARD_RECORD 
+group by card_id,substr(create_time,0,4),substr(create_time,6,2)) a 
+left join (select card_id,substr(return_time,0,4)year,substr(return_time,6,2)month,
+count(*)rent_count,sum(24*(to_date(return_time,'yyyy-mm-dd hh:mi:ss')-to_date(rent_time,'yyyy-mm-dd hh:mi:ss')))rent_hour,
+cast(sum(24*(to_date(return_time,'yyyy-mm-dd hh:mi:ss')-to_date(rent_time,'yyyy-mm-dd hh:mi:ss')))/count(*) as number(10,2)) avg_rent_hour
+from BICYCLE_RECORD 
+where money is not null and return_time is not null
+group by card_id,substr(return_time,0,4),substr(return_time,6,2))b
+on a.card_id=b.card_id and a.year=b.year and a.month=b.month,card c
+where a.card_id=c.card_id 
+<if test="card_code!=null and card_code!=''">
+   and c.card_code=#{card_code}
+</if>
+<if test="year!=null and year!='请选择'">
+and a.year=#{year}
+</if>
+<if test="month!=null and month!='请选择'">
+and a.month=#{month}
+</if>
+order by  a.card_id,a.year,a.month 
+
+
+</select>
+
+
+
+
+
+
+
+</mapper>

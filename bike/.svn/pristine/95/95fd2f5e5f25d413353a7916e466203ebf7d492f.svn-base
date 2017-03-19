@@ -1,0 +1,62 @@
+package com.aowin.service.card;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.aowin.dao.card.ICardDao;
+import com.aowin.model.card.Card;
+@Service
+public class CardService {
+	@Autowired
+	private ICardDao cardDao;
+	
+	public Card checkCardCode(Card card){
+		Card c=cardDao.checkCardCode(card);
+		return c;
+	}
+	public boolean addCard(Card card){
+		int num=cardDao.addCard(card);
+		int num2=cardDao.addCardInfoRecord(card);
+		return num==num2&&num>0?true:false;
+			
+	}
+	//一进入新增页面就显示下一个卡号
+	public int selCardCode(){
+		int cardCode=cardDao.selNextCardCode();
+		return cardCode;
+	}
+	
+	//根据条件查询卡信息
+	public List<Card> queryCards(Card card){
+		List<Card> cards=cardDao.queryCards(card);
+		return cards;
+	}
+	//修改前先查询出该卡号的所有信息
+	public Card queryByCode(String card_code){
+		Card card=cardDao.queryByCode(card_code);
+		return card;
+	}
+	//修改办卡信息
+	public boolean updateOneCard(Card card){
+		int m=cardDao.updateOneCard(card);
+		return m>0?true:false;
+	}
+	
+	//卡挂失
+	 public boolean reportLossCard(Card card){
+		int m=cardDao.reportLossCard(card);
+		int n=cardDao.addReportLossRecord(card);
+		return m==n&&m>0?true:false;
+	 }
+	   
+	
+	public ICardDao getCardDao() {
+		return cardDao;
+	}
+	public void setCardDao(ICardDao cardDao) {
+		this.cardDao = cardDao;
+	}
+
+}
